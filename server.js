@@ -17,7 +17,7 @@ app.use(cors());
 app.use(limiter);
 
 app.use('/custom-widgets/Home/CSRFToken', require('./routes/GetCSRFToken'));
-app.use('/custom-widgets/api/widgets', verifyCSRF, require('./routes/Widgets'));
+app.use('/custom-widgets/Api/', verifyCSRF, require('./routes/Widgets'));
 
 const port = process.env.PORT || 5000;
 (async () => {

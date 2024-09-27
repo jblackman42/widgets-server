@@ -1,19 +1,19 @@
 const jwt = require('jsonwebtoken');
+const { createErrorResponse } = require('../util/error');
 
 const verifyCSRF = (req, res, next) => {
   const csrfToken = req.headers['x-csrf-token'];
   const secret = process.env.JwtSecureKey; // Replace with your actual shared secret
 
   if (!csrfToken) {
-    res.status(403).send("Bad or missing CSRF Token");
+    createErrorResponse(res, 403, "Bad or missing CSRF Token");
     return;
   }
 
   // Verify the JWT using the HS256 algorithm and the shared secret
   jwt.verify(csrfToken.toString(), secret, { algorithms: ['HS256'] }, (err, decoded) => {
     if (err) {
-      console.error('Failed to verify JWT:', err);
-      res.status(403).send("Invalid or tampered CSRF Token");
+      createErrorResponse(res, 403, "Invalid or tampered CSRF Token");
       return;
     }
 
@@ -25,12 +25,12 @@ const verifyCSRF = (req, res, next) => {
     const currentTime = Math.floor(Date.now() / 1000);
 
     if (exp <= currentTime) {
-      res.status(403).send("CSRF Token has expired.");
+      createErrorResponse(res, 403, "Security token has expired");
       return;
     }
 
-    if (process.env.NODE_ENV === 'production' && CSRF !== ipData) {
-      res.status(403).send("Invalid CSRF token for your IP.");
+    if (process.env.NODE_ENV !== 'development' && CSRF !== ipData) {
+      createErrorResponse(res, 403, "Bad or missing CSRF Token");
       return;
     }
 

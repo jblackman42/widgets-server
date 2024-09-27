@@ -1,15 +1,15 @@
 const express = require('express');
 const {db} = require('../db/database');
+const {createErrorResponse} = require('../util/error');
 
 const router = express.Router();
 
-router.get('/staff', async (req, res) => {
+router.post('/staff', async (req, res) => {
   try {
     const result = await db.queryFromPath('staff');
     res.send(result);
   } catch (error) {
-    console.error(error);
-    res.status(500).send('Query execution failed');
+    createErrorResponse(res, 500, "Internal Server Error");
   }
 });
 
