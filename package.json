@@ -5,6 +5,7 @@
     "express": "^4.21.0",
     "express-rate-limit": "^7.4.0",
     "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.0",
     "mssql": "^11.0.1",
     "nodemon": "^3.1.7"
   },

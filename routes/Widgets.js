@@ -1,15 +1,22 @@
 const express = require('express');
 const {db} = require('../db/database');
-const {createErrorResponse} = require('../util/error');
+const {handleError} = require('../util/error');
 
 const router = express.Router();
 
 router.post('/staff', async (req, res) => {
   try {
-    const result = await db.queryFromPath('staff');
-    res.send(result);
+    res.send(await db.queryFromPath('staff'));
   } catch (error) {
-    createErrorResponse(res, 500, "Internal Server Error");
+    handleError(error, req, res);
+  }
+});
+
+router.post('/sermons', async (req, res) => {
+  try {
+    res.send(await db.queryFromPath('sermons'));
+  } catch (error) {
+    handleError(error, req, res);
   }
 });
 
