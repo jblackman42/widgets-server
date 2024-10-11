@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const { createErrorResponse } = require('../util/error');
+const { createErrorResponse } = require('../lib/error');
 
 const verifyCSRF = (req, res, next) => {
   const csrfToken = req.headers['x-csrf-token'];

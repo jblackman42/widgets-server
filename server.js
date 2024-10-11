@@ -8,19 +8,42 @@ const { logger, errorLogger } = require('./middleware/logging'); // Ensure the p
 const app = express();
 require('dotenv').config()
 
-const limiter = rateLimit({
-  windowMs: 60 * 1000,
-  limit: 100,
+const getLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minute
+  limit: 100, // limit each IP to 100 requests per windowMs
   standardHeaders: 'draft-7',
   legacyHeaders: false
 });
 
+const postLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minute
+  limit: 4, // limit each IP to 4 requests per windowMs
+  standardHeaders: 'draft-7',
+  legacyHeaders: false
+});
+
+// Middleware to apply different rate limits based on request method
+function methodBasedRateLimiter(req, res, next) {
+  if (req.method === 'GET') {
+    return getLimiter(req, res, next);
+  } else if (req.method === 'POST') {
+    return postLimiter(req, res, next);
+  }
+  next();
+}
+
+// Apply the method-based rate limiter to all routes
 app.use(cors());
-app.use(limiter);
-app.use(logger);
+if (process.env.NODE_ENV === 'production') app.use(logger);
+app.use(methodBasedRateLimiter);
+
+// Add body-parser middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.use('/custom-widgets/Home', require('./routes/GetCSRFToken'));
-app.use('/custom-widgets/Api/', verifyCSRF, require('./routes/Widgets'));
+app.use('/custom-widgets/Widgets', require('./routes/Widgets'));
+app.use('/custom-widgets/Api', verifyCSRF, require('./routes/WidgetQueries'));
 
 // Serve static files from the 'dist' directory
 app.use('/custom-widgets/dist', express.static(path.join(__dirname, 'dist')));

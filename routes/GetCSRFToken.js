@@ -1,7 +1,7 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const net = require('net');
-const { handleError } = require('../util/error');
+const { handleError } = require('../lib/error');
 
 function isValidIP(ip) {
   return net.isIP(ip) !== 0;

@@ -1,0 +1,88 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  .popup-container {
+
+    &.open {
+      opacity: 1;
+
+      .popup {
+        animation: bounce-fade-in 150ms linear forwards;
+      }
+    }
+
+    &.close {
+      animation:
+        fade-out 100ms linear forwards,
+        hide 1ms linear 100ms forwards;
+
+      .popup {
+        animation: fade-zoom-out 100ms linear forwards;
+      }
+    }
+  }
+
+  .custom-scroller::-webkit-scrollbar {
+    width: 20px;
+  }
+
+  .custom-scroller::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
+
+  .custom-scroller::-webkit-scrollbar-thumb {
+    background-color: #d6dee1;
+    border-radius: 20px;
+    border: 6px solid transparent;
+    background-clip: content-box;
+  }
+}
+
+
+@keyframes hide {
+  100% {
+    z-index: -1;
+    display: none;
+  }
+}
+
+@keyframes bounce-fade-in {
+  0% {
+    opacity: 0;
+    transform: scale(.6);
+  }
+
+  80% {
+    opacity: 0.8;
+    transform: scale(1.04);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes fade-out {
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes fade-zoom-out {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(.8);
+  }
+}

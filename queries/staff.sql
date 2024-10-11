@@ -21,3 +21,4 @@ FROM Group_Participants
   LEFT JOIN dp_Files F ON Contacts.Contact_ID = F.Record_ID AND F.Page_ID = 292 AND F.Default_Image = 1
 WHERE Group_ID = 2473 --id of staff group
   AND (Group_Participants.End_Date > GETDATE() OR Group_Participants.End_Date IS NULL)
+  AND Teams.Team_Name IS NOT NULL
