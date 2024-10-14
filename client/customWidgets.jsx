@@ -117,7 +117,14 @@ const CustomWidgets = {
 };
 
 // Initialize the CustomWidgets when the DOM is ready
-document.addEventListener('DOMContentLoaded', () => CustomWidgets.init());
+document.addEventListener('DOMContentLoaded', () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const cacheKey = urlParams.get('cacheKey');
+  if (cacheKey) {
+    sessionStorage.setItem("cacheKey", cacheKey);
+  }
+  CustomWidgets.init();
+});
 
 // Export CustomWidgets for external use
 export default CustomWidgets;

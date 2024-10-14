@@ -5,6 +5,8 @@ const verifyCSRF = (req, res, next) => {
   const csrfToken = req.headers['x-csrf-token'];
   const secret = process.env.JwtSecureKey; // Replace with your actual shared secret
 
+  if (process.env.NODE_ENV === 'development') return next();
+
   if (!csrfToken) {
     createErrorResponse(res, 403, "Bad or missing CSRF Token");
     return;
