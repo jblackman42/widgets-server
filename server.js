@@ -4,6 +4,8 @@ const path = require('path');
 const {rateLimit} = require('express-rate-limit');
 const verifyCSRF = require('./middleware/verifyCSRF');
 const { logger, errorLogger } = require('./middleware/logging'); // Ensure the path is correct
+const { db } = require('./db/database');
+const { initializeOAuth } = require('./lib/oauthConfig');
 
 const app = express();
 require('dotenv').config()
@@ -54,9 +56,10 @@ app.use(errorLogger);
 const port = process.env.PORT || 5000;
 (async () => {
   try {
+    await db.connect();
+    await initializeOAuth();
     app.listen(port, () => console.log(`Server is listening on port ${port} - http://localhost:${port}`));
   } catch (error) {
     console.error(error);
-    writeToErrorLog(error);
   }
 })();

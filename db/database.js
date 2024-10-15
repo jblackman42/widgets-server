@@ -5,8 +5,23 @@ const path = require('path');
 const db = {
   pool: null,
   connect: async function () {
-    // this.pool = await sql.connect(`Server=${process.env.DB_SERVER},1433;Database=${process.env.DB_NAME};User Id=${process.env.DB_USER};Password=${process.env.DB_PWD};trustServerCertificate=${process.env.NODE_ENV === 'development'}`);
-    this.pool = await sql.connect(`Server=${process.env.DB_SERVER},1433;Database=${process.env.DB_NAME};User Id=${process.env.DB_USER};Password=${process.env.DB_PWD};trustServerCertificate=true`);
+    this.pool = await sql.connect(`Server=${process.env.DB_SERVER},1433;Database=${process.env.DB_NAME};User Id=${process.env.DB_USER};Password=${process.env.DB_PWD};trustServerCertificate=${process.env.NODE_ENV === 'development'}`);
+  },
+  getOauthConfig: async function () {
+    if (this.oauthConfig) {
+      return this.oauthConfig;
+    }
+    try {
+      const response = await fetch(process.env.OAUTH_DISCOVERY_URL);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      this.oauthConfig = await response.json();
+      return this.oauthConfig;
+    } catch (error) {
+      console.error('Failed to fetch OAuth configuration:', error);
+      throw new Error('Unable to retrieve OAuth configuration');
+    }
   },
   readSqlFile: function (filePath) {
     const fullPath = path.join(__dirname, '..', 'queries', `${filePath}.sql`);
@@ -67,6 +82,4 @@ const db = {
   }
 };
 
-module.exports = {
-  db
-}
+module.exports = { db };
